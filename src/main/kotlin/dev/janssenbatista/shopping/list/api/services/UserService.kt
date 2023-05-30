@@ -33,16 +33,19 @@ class UserService(private val userRepository: UserRepository) {
         if (!userAlreadyExists.isPresent) {
             throw UserNotFoundException("User with id $id not found")
         }
-        val hashPassword = BCryptPasswordEncoder().encode(user.password)
-        user.password = hashPassword
-        user.updatedAt = LocalDateTime.now()
+        val hashPassword = BCryptPasswordEncoder(12).encode(user.password)
+        userAlreadyExists.get().apply {
+            email = user.email
+            password = hashPassword
+            updatedAt = LocalDateTime.now()
+        }
         return userRepository.save(user)
     }
 
-    fun deleteById(userId: UUID) {
-        userRepository.findById(userId)
-                .orElseThrow { throw UserNotFoundException("User with id $userId not found") }
-        userRepository.deleteById(userId)
+    fun deleteById(id: UUID) {
+        userRepository.findById(id)
+                .orElseThrow { throw UserNotFoundException("User with id $id not found") }
+        userRepository.deleteById(id)
     }
 }
 
