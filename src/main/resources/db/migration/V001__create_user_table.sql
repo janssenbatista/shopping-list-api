@@ -1,0 +1,7 @@
+CREATE TABLE tb_users (
+    id UUID NOT NULL PRIMARY KEY,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password CHAR(60) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE,
+    updated_at TIMESTAMP WITH TIME ZONE
+)
