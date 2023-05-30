@@ -43,18 +43,25 @@ data class User(
         return this::class.simpleName + "(id = $id )"
     }
 
+    @JsonIgnore
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
             mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("USER"))
 
+    @JsonIgnore
     override fun getPassword(): String = this.userPassword
 
+    @JsonIgnore
     override fun getUsername() = this.email
 
+    @JsonIgnore
     override fun isAccountNonExpired() = true
 
+    @JsonIgnore
     override fun isAccountNonLocked() = true
 
+    @JsonIgnore
     override fun isCredentialsNonExpired() = true
 
+    @JsonIgnore
     override fun isEnabled() = true
 }
