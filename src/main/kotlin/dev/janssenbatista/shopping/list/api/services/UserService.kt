@@ -4,13 +4,16 @@ import dev.janssenbatista.shopping.list.api.exceptions.UserAlreadyExistsExceptio
 import dev.janssenbatista.shopping.list.api.exceptions.UserNotFoundException
 import dev.janssenbatista.shopping.list.api.models.User
 import dev.janssenbatista.shopping.list.api.repositories.UserRepository
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class UserService(private val userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository) : UserDetailsService {
 
     fun findUserById(id: UUID): User {
         return userRepository.findById(id).orElseThrow {
@@ -46,6 +49,11 @@ class UserService(private val userRepository: UserRepository) {
         userRepository.findById(id)
                 .orElseThrow { throw UserNotFoundException("User with id $id not found") }
         userRepository.deleteById(id)
+    }
+
+    override fun loadUserByUsername(email: String?): UserDetails {
+        return userRepository.findByEmail(email!!)
+                .orElseThrow { throw UsernameNotFoundException("User not found") }
     }
 }
 

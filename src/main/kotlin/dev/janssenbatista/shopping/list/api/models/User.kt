@@ -3,6 +3,9 @@ package dev.janssenbatista.shopping.list.api.models
 import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import org.hibernate.Hibernate
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serializable
 import java.time.LocalDateTime
 import java.util.*
@@ -23,7 +26,7 @@ data class User(
         val createdAt: LocalDateTime = LocalDateTime.now(),
         @Column(name = "updated_at", nullable = false)
         var updatedAt: LocalDateTime = LocalDateTime.now()
-) : Serializable {
+) : Serializable, UserDetails {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -39,4 +42,19 @@ data class User(
     override fun toString(): String {
         return this::class.simpleName + "(id = $id )"
     }
+
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
+            mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("USER"))
+
+    override fun getPassword(): String = this.password
+
+    override fun getUsername() = this.email
+
+    override fun isAccountNonExpired() = true
+
+    override fun isAccountNonLocked() = true
+
+    override fun isCredentialsNonExpired() = true
+
+    override fun isEnabled() = true
 }
