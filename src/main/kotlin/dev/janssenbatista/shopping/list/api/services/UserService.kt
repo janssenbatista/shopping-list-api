@@ -26,8 +26,8 @@ class UserService(private val userRepository: UserRepository) : UserDetailsServi
         if (userAlreadyExists.isPresent) {
             throw UserAlreadyExistsException("User already exists!")
         }
-        val hashPassword = BCryptPasswordEncoder(12).encode(user.password)
-        user.password = hashPassword
+        val hashPassword = BCryptPasswordEncoder(12).encode(user.userPassword)
+        user.userPassword = hashPassword
         return userRepository.save(user)
     }
 
@@ -36,10 +36,10 @@ class UserService(private val userRepository: UserRepository) : UserDetailsServi
         if (!userAlreadyExists.isPresent) {
             throw UserNotFoundException("User with id $id not found")
         }
-        val hashPassword = BCryptPasswordEncoder(12).encode(user.password)
+        val hashPassword = BCryptPasswordEncoder(12).encode(user.userPassword)
         userAlreadyExists.get().apply {
             email = user.email
-            password = hashPassword
+            userPassword = hashPassword
             updatedAt = LocalDateTime.now()
         }
         return userRepository.save(user)

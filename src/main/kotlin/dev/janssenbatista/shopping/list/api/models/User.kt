@@ -19,9 +19,9 @@ data class User(
         val id: UUID = UUID.randomUUID(),
         @Column(nullable = false, unique = true, length = 100)
         var email: String,
-        @Column(nullable = false, length = 60)
+        @Column(nullable = false, length = 60, name = "password")
         @JsonIgnore
-        var password: String,
+        var userPassword: String,
         @Column(name = "created_at", nullable = false)
         val createdAt: LocalDateTime = LocalDateTime.now(),
         @Column(name = "updated_at", nullable = false)
@@ -46,7 +46,7 @@ data class User(
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> =
             mutableListOf<GrantedAuthority>(SimpleGrantedAuthority("USER"))
 
-    override fun getPassword(): String = this.password
+    override fun getPassword(): String = this.userPassword
 
     override fun getUsername() = this.email
 

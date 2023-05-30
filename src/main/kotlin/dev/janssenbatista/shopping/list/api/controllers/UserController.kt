@@ -2,6 +2,7 @@ package dev.janssenbatista.shopping.list.api.controllers
 
 import dev.janssenbatista.shopping.list.api.models.User
 import dev.janssenbatista.shopping.list.api.models.dtos.UserDTO
+import dev.janssenbatista.shopping.list.api.models.dtos.UserResponseDTO
 import dev.janssenbatista.shopping.list.api.services.UserService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -16,8 +17,9 @@ class UserController(private val userService: UserService) {
 
     @PostMapping
     fun createUser(@RequestBody @Valid userDTO: UserDTO): ResponseEntity<Any> {
-        val user = User(email = userDTO.email, password = userDTO.password)
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save(user))
+        val createdUser = userService.save(User(email = userDTO.email, userPassword = userDTO.password))
+        val userResponseDTO = UserResponseDTO(createdUser.id, createdUser.email)
+        return ResponseEntity.status(HttpStatus.CREATED).body(userResponseDTO)
     }
 
     @GetMapping("/{id}")
@@ -28,11 +30,15 @@ class UserController(private val userService: UserService) {
     }
 
     @PutMapping("/{id}")
-    fun updateUser(@PathVariable(value = "id") userId: UUID, @RequestBody @Valid userDTO: UserDTO, authentication: Authentication): ResponseEntity<User> {
+    fun updateUser(@PathVariable(value = "id") userId: UUID,
+                   @RequestBody @Valid userDTO: UserDTO,
+                   authentication: Authentication): ResponseEntity<Any> {
         if (getUser(authentication).id != userId)
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
-        val user = User(email = userDTO.email, password = userDTO.password)
-        return ResponseEntity.ok(userService.update(id = userId, user = user))
+        val updatedUser = userService.update(id = userId,
+                user = User(email = userDTO.email, userPassword = userDTO.password))
+        val userResponseDTO = UserResponseDTO(updatedUser.id, updatedUser.email)
+        return ResponseEntity.ok(userResponseDTO)
     }
 
     @DeleteMapping("/{id}")
