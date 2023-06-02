@@ -14,7 +14,7 @@ class ValidationExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handlerValidException(ex: MethodArgumentNotValidException): ResponseEntity<ExceptionDetails> {
-        val errors: MutableMap<String, String?> = HashMap()
+        val errors: MutableMap<String, String?> = mutableMapOf()
         ex.bindingResult.allErrors.forEach { error: ObjectError ->
             val fieldName: String = (error as FieldError).field
             val messageError: String? = error.defaultMessage

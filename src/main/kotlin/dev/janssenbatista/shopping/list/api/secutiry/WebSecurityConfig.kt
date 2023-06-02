@@ -22,7 +22,7 @@ class WebSecurityConfig {
             }
             .authorizeHttpRequests { auth ->
                 auth.requestMatchers(HttpMethod.POST, "/users").permitAll()
-                auth.anyRequest().hasRole("USER")
+                auth.anyRequest().authenticated()
             }
             .httpBasic(Customizer.withDefaults())
             .sessionManagement {

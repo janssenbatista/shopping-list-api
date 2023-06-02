@@ -21,10 +21,8 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable(value = "id") userId: UUID, authentication: Authentication): ResponseEntity<User> {
+    fun getUserById(@PathVariable(value = "id") userId: UUID): ResponseEntity<User> {
         val user = userService.findUserById(id = userId)
-        if (getUser(authentication).email != user.email)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         return ResponseEntity.ok(user)
     }
 
@@ -32,23 +30,16 @@ class UserController(private val userService: UserService) {
     fun updateUser(@PathVariable(value = "id") userId: UUID,
                    @RequestBody @Valid userDTO: UserDTO,
                    authentication: Authentication): ResponseEntity<User> {
-        if (getUser(authentication).id != userId)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         val updatedUser = userService.update(id = userId,
                 user = User(email = userDTO.email, userPassword = userDTO.password))
         return ResponseEntity.ok(updatedUser)
     }
 
     @DeleteMapping("/{id}")
-    fun deleteUser(@PathVariable(value = "id") userId: UUID, authentication: Authentication): ResponseEntity<Any> {
-        if (getUser(authentication).id != userId)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+    fun deleteUser(@PathVariable(value = "id") userId: UUID): ResponseEntity<Any> {
         userService.deleteById(id = userId)
         return ResponseEntity.noContent().build()
     }
-
-    private fun getUser(authentication: Authentication) =
-            authentication.principal as User
 
 
 }

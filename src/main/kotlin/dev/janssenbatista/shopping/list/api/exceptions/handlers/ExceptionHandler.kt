@@ -1,5 +1,6 @@
 package dev.janssenbatista.shopping.list.api.exceptions.handlers
 
+import dev.janssenbatista.shopping.list.api.exceptions.UnauthorizedException
 import dev.janssenbatista.shopping.list.api.exceptions.UserAlreadyExistsException
 import dev.janssenbatista.shopping.list.api.exceptions.UserNotFoundException
 import org.springframework.http.HttpStatus
@@ -15,6 +16,7 @@ class ExceptionHandler {
         return when (ex) {
             is UserNotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
             is UserAlreadyExistsException -> ResponseEntity.status(HttpStatus.CONFLICT).body(ex.message)
+            is UnauthorizedException -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
             else -> ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
     }
