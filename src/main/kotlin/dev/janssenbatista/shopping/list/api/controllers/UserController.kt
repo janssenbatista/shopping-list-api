@@ -21,15 +21,14 @@ class UserController(private val userService: UserService) {
     }
 
     @GetMapping("/{id}")
-    fun getUserById(@PathVariable(value = "id") userId: UUID): ResponseEntity<User> {
+    fun findUserById(@PathVariable(value = "id") userId: UUID): ResponseEntity<User> {
         val user = userService.findUserById(id = userId)
         return ResponseEntity.ok(user)
     }
 
     @PutMapping("/{id}")
     fun updateUser(@PathVariable(value = "id") userId: UUID,
-                   @RequestBody @Valid userDTO: UserDTO,
-                   authentication: Authentication): ResponseEntity<User> {
+                   @RequestBody @Valid userDTO: UserDTO): ResponseEntity<User> {
         val updatedUser = userService.update(id = userId,
                 user = User(email = userDTO.email, userPassword = userDTO.password))
         return ResponseEntity.ok(updatedUser)
