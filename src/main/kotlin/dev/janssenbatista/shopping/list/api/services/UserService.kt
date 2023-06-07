@@ -15,7 +15,8 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Service
-class UserService(private val userRepository: UserRepository, private val authenticationFacade: AuthenticationFacade) : UserDetailsService {
+class UserService(private val userRepository: UserRepository,
+                  private val authenticationFacade: AuthenticationFacade) : UserDetailsService {
 
     fun findUserById(id: UUID): User {
         val user = userRepository.findById(id).orElseThrow {
@@ -40,7 +41,7 @@ class UserService(private val userRepository: UserRepository, private val authen
         val userExists = userRepository.findById(id).orElseThrow {
             UserNotFoundException("User with id $id not found")
         }
-        if (user.email != authenticationFacade.getAuthentication().name)
+        if (userExists.email != authenticationFacade.getAuthentication().name)
             throw UnauthorizedException()
         val hashPassword = BCryptPasswordEncoder(12).encode(user.userPassword)
         userExists.apply {

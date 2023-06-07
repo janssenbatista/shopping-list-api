@@ -1,8 +1,13 @@
 package dev.janssenbatista.shopping.list.api.models
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import com.fasterxml.jackson.annotation.JsonIgnore
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import org.hibernate.Hibernate
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -21,8 +26,10 @@ data class User(
         @Column(nullable = false, length = 60, name = "password")
         @JsonIgnore
         var userPassword: String,
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         @Column(name = "created_at", nullable = false)
         val createdAt: LocalDateTime = LocalDateTime.now(),
+        @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
         @Column(name = "updated_at", nullable = false)
         var updatedAt: LocalDateTime = LocalDateTime.now()
 ) : Serializable, UserDetails {
@@ -31,7 +38,6 @@ data class User(
         if (this === other) return true
         if (other == null || Hibernate.getClass(this) != Hibernate.getClass(other)) return false
         other as User
-
         return id == other.id
     }
 
